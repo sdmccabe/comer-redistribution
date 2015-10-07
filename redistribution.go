@@ -17,11 +17,14 @@ package main
 import (
 	"fmt"
 	"github.com/GaryBoone/GoStats/stats"
+	"github.com/Workiva/go-datastructures/queue"
 	"github.com/gonum/matrix/mat64"
 	"github.com/oleiade/lane"
+	"log"
 	"math"
 	"math/rand"
 	"sort"
+	"sync"
 	"time"
 )
 
@@ -129,6 +132,35 @@ func Randmact() {
 
 // Unifact randomly selects a Population's worth in pairs and levels.
 func Unifact() {
+	var turnList *queue.Queue = queue.New(int64(len(Pop)))
+	var wg sync.WaitGroup
+
+	for _, x := range rand.Perm(len(Pop)) {
+		err := turnList.Put(x)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	size := int(turnList.Len()) / 2
+	for i := 0; i < size; i++ {
+		bag, err := turnList.Get(2)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		alpha := bag[0].(int)
+		beta := bag[1].(int)
+		wg.Add(1)
+		go func(a, b int) {
+			defer wg.Done()
+			Proc(&Pop[a], &Pop[b])
+		}(alpha, beta)
+	}
+	wg.Wait()
+}
+
+/* func Unifact() {
 	turnList := make([]*Agent, len(Pop))
 	//	copy(turnList, Pop)
 	for i := 0; i < len(turnList); i++ {
@@ -160,7 +192,7 @@ func Unifact() {
 		}
 
 	}
-}
+}*/
 
 // Poisact activates a Pop's worth in pairs chosen based on Poisson activation probabilities.
 func Poisact() {
