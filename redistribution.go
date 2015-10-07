@@ -160,40 +160,6 @@ func Unifact() {
 	wg.Wait()
 }
 
-/* func Unifact() {
-	turnList := make([]*Agent, len(Pop))
-	//	copy(turnList, Pop)
-	for i := 0; i < len(turnList); i++ {
-		turnList[i] = &Pop[i]
-	}
-	for i := 0; i < NumOfAgents/2; i++ {
-
-		x := rand.Intn(len(turnList))
-		alpha := turnList[x]
-
-		if x < len(turnList)-1 {
-			turnList = append(turnList[:x], turnList[x+1:]...)
-		} else {
-			turnList = turnList[:x]
-		}
-
-		x = rand.Intn(len(turnList))
-		beta := turnList[x]
-
-		if x < len(turnList)-1 {
-			turnList = append(turnList[:x], turnList[x+1:]...)
-		} else {
-			turnList = turnList[:x]
-		}
-		Proc(alpha, beta)
-
-		if len(turnList) < 2 {
-			break
-		}
-
-	}
-}*/
-
 // Poisact activates a Pop's worth in pairs chosen based on Poisson activation probabilities.
 func Poisact() {
 	// make activation rate inversely proportional to distance from mean
